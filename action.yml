@@ -1,10 +1,9 @@
-name: 'dummy-timer'
-description: 'Provide a description here'
+name: 'repo-backup-ipfs'
+description: 'A GitHub action that backs up your source code to IPFS.'
 author: 'Dhaiwat Pandya'
-inputs:
-  milliseconds: # change this
-    required: true
-    description: 'Number of milliseconds to wait'
+outputs:
+  cid:
+    description: 'CID of the latest copy of your source code uploaded to IPFS.'
 runs:
   using: 'node16'
   main: 'dist/index.js'

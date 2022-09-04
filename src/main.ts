@@ -1,19 +1,40 @@
-import * as core from '@actions/core'
-import {wait} from './wait'
+import * as core from '@actions/core';
+import * as github from '@actions/github';
+import * as fs from 'fs';
+import fetch from 'node-fetch';
+import { Web3Storage, getFilesFromPath, Filelike } from 'web3.storage';
+import { token } from './creds';
+
+const web3StorageClient = new Web3Storage({
+  token
+});
 
 async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
+    const repoOwner = github.context.repo.owner;
+    const repoName = github.context.repo.repo;
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    const repoContents = await fetch(
+      `https://api.github.com/repos/${repoOwner}/${repoName}/zipball`
+    );
 
-    core.setOutput('time', new Date().toTimeString())
+    const repoBuffer = await repoContents.buffer();
+    fs.writeFileSync('./repo.zip', repoBuffer);
+
+    // log the newly created zip file's size in megabytes
+    const stats = fs.statSync('./repo.zip');
+    const fileSizeInMegabytes = stats.size / 1000000.0;
+    core.debug(`repo.zip size: ${fileSizeInMegabytes} MB`);
+
+    const files = await getFilesFromPath('./repo.zip');
+    const cid = await web3StorageClient.put(files as Iterable<Filelike>);
+
+    core.debug(`cid: ${cid}`);
+
+    core.setOutput('cid', cid);
   } catch (error) {
-    if (error instanceof Error) core.setFailed(error.message)
+    if (error instanceof Error) core.setFailed(error.message);
   }
 }
 
-run()
+run();
