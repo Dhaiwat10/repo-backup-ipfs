@@ -81,7 +81,7 @@ function run() {
             core.debug(`repo.zip size: ${fileSizeInMegabytes} MB`);
             const files = yield (0, web3_storage_1.getFilesFromPath)('./repo.zip');
             const cid = yield web3StorageClient.put(files);
-            core.debug(`cid: ${cid}`);
+            core.info(`CID of the latest backup: ${cid}`);
             core.setOutput('cid', cid);
         }
         catch (error) {

@@ -29,7 +29,7 @@ async function run(): Promise<void> {
     const files = await getFilesFromPath('./repo.zip');
     const cid = await web3StorageClient.put(files as Iterable<Filelike>);
 
-    core.debug(`cid: ${cid}`);
+    core.info(`CID of the latest backup: ${cid}`);
 
     core.setOutput('cid', cid);
   } catch (error) {
