@@ -20,3 +20,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ./
+        with:
+          web3storage_token: ${{ secrets.WEB3STORAGE_TOKEN }}
