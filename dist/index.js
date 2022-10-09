@@ -9,18 +9,6 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 
 /***/ }),
 
-/***/ 3648:
-/***/ ((__unused_webpack_module, exports) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.token = void 0;
-exports.token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweGE4MkJCMTcxODFFQmMyZTMxMUQ2ZGU1MjA1RTNDYzg0NzdlNThBNUQiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NjE5NjEzNDU0NTUsIm5hbWUiOiJnaXQtYmFja3VwLXRlc3QifQ.Qhk_dWL8kKDuUSbAtjkdEa_ZZeTTZv-eqJXBBwcACNk';
-
-
-/***/ }),
-
 /***/ 3109:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -63,15 +51,16 @@ const github = __importStar(__nccwpck_require__(5438));
 const fs = __importStar(__nccwpck_require__(5747));
 const node_fetch_1 = __importDefault(__nccwpck_require__(6173));
 const web3_storage_1 = __nccwpck_require__(8100);
-const creds_1 = __nccwpck_require__(3648);
-const web3StorageClient = new web3_storage_1.Web3Storage({
-    token: creds_1.token
-});
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const repoOwner = github.context.repo.owner;
             const repoName = github.context.repo.repo;
+            const token = core.getInput('web3storage_token');
+            core.setSecret(token);
+            const web3StorageClient = new web3_storage_1.Web3Storage({
+                token
+            });
             const repoContents = yield (0, node_fetch_1.default)(`https://api.github.com/repos/${repoOwner}/${repoName}/zipball`);
             const repoBuffer = yield repoContents.buffer();
             fs.writeFileSync('./repo.zip', repoBuffer);

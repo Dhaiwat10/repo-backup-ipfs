@@ -1,6 +1,10 @@
 name: 'repo-backup-ipfs'
 description: 'A GitHub action that backs up your source code to IPFS.'
 author: 'Dhaiwat Pandya'
+inputs:
+  web3storage_token:
+    description: 'Web3.Storage API token'
+    required: true
 outputs:
   cid:
     description: 'CID of the latest copy of your source code uploaded to IPFS.'

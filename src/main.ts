@@ -3,16 +3,18 @@ import * as github from '@actions/github';
 import * as fs from 'fs';
 import fetch from 'node-fetch';
 import { Web3Storage, getFilesFromPath, Filelike } from 'web3.storage';
-import { token } from './creds';
-
-const web3StorageClient = new Web3Storage({
-  token
-});
 
 async function run(): Promise<void> {
   try {
     const repoOwner = github.context.repo.owner;
     const repoName = github.context.repo.repo;
+
+    const token = core.getInput('web3storage_token');
+    core.setSecret(token);
+
+    const web3StorageClient = new Web3Storage({
+      token
+    });
 
     const repoContents = await fetch(
       `https://api.github.com/repos/${repoOwner}/${repoName}/zipball`
